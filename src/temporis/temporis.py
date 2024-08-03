@@ -22,6 +22,10 @@ class Temporis:
 
     # Date operations
     @staticmethod
+    def add_hours(dt: datetime, hours: int) -> datetime:
+        return dt + timedelta(hours=hours)
+
+    @staticmethod
     def add_days(dt: datetime, days: int) -> datetime:
         return dt + timedelta(days=days)
 
@@ -31,7 +35,7 @@ class Temporis:
 
     # Business logic
     @staticmethod
-    def next_business_day(dt: datetime, holidays: list[datetime] = []) -> datetime:
+    def next_business_day(dt: datetime, holidays: list[date] = []) -> datetime:
         while True:
             dt = Temporis.add_days(dt, 1)
             if Temporis.is_business_day(dt, holidays):
@@ -52,7 +56,7 @@ class Temporis:
         return dt.replace(day=1, month=1, year=dt.year + 1)
 
     @staticmethod
-    def previous_business_day(dt: datetime, holidays: list[datetime] = []) -> datetime:
+    def previous_business_day(dt: datetime, holidays: list[date] = []) -> datetime:
         while True:
             dt = Temporis.add_days(dt, -1)
             if Temporis.is_business_day(dt, holidays):
@@ -60,7 +64,7 @@ class Temporis:
 
     @staticmethod
     def first_business_day_of_month(
-        dt: datetime, holidays: list[datetime] = []
+        dt: datetime, holidays: list[date] = []
     ) -> datetime:
         dt = Temporis.first_day_of_month(dt)
         if not Temporis.is_business_day(dt, holidays):
@@ -69,7 +73,7 @@ class Temporis:
 
     @staticmethod
     def last_business_day_of_month(
-        dt: datetime, holidays: list[datetime] = []
+        dt: datetime, holidays: list[date] = []
     ) -> datetime:
         dt = Temporis.last_day_of_month(dt)
         if not Temporis.is_business_day(dt, holidays):
@@ -77,7 +81,7 @@ class Temporis:
 
     # Utils
     @staticmethod
-    def is_business_day(dt: datetime, holidays: list[datetime] = []) -> bool:
+    def is_business_day(dt: datetime, holidays: list[date] = []) -> bool:
         return not Temporis.is_weekend(dt) and not Temporis.is_holiday(dt, holidays)
 
     @staticmethod
@@ -85,7 +89,7 @@ class Temporis:
         return dt.weekday() in [5, 6]
 
     @staticmethod
-    def is_holiday(dt: datetime, holidays: list[datetime]) -> bool:
+    def is_holiday(dt: datetime, holidays: list[date]) -> bool:
         return dt.date() in holidays
 
     @staticmethod
