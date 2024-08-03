@@ -1,0 +1,41 @@
+[project]
+name = "temporis"
+version = "1.0.0"
+description = "Temporis is a Python library for elegantly managing and transforming dates and times. It provides intuitive tools for handling temporal data, making time calculations, conversions, and formatting simple and efficient."
+authors = [
+    {name = "Jaime AG", email = "ja.alvarezgom@gmail.com"},
+]
+dependencies = [
+    "tzdata>=2024.1",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/jalvarezgom/temporis"
+Issues = "https://github.com/jalvarezgom/temporis/issues"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+lint = [
+    "ruff>=0.5.5",
+]
+test = [
+    "pytest>=8.3.2",
+]
+
+[tool.pdm.scripts]
+lint.composite = ["ruff check --fix", "ruff format"]
+test = "pytest"
