@@ -1,6 +1,6 @@
 [project]
 name = "temporis"
-version = "1.0.1"
+version = "1.0.2"
 description = "Temporis is a Python library for elegantly managing and transforming dates and times. It provides intuitive tools for handling temporal data, making time calculations, conversions, and formatting simple and efficient."
 authors = [
     {name = "Jaime AG", email = "ja.alvarezgom@gmail.com"},

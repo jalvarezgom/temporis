@@ -22,6 +22,14 @@ class Temporis:
 
     # Date operations
     @staticmethod
+    def add_seconds(dt: datetime, seconds: int) -> datetime:
+        return dt + timedelta(seconds=seconds)
+
+    @staticmethod
+    def add_minutes(dt: datetime, minutes: int) -> datetime:
+        return dt + timedelta(minutes=minutes)
+
+    @staticmethod
     def add_hours(dt: datetime, hours: int) -> datetime:
         return dt + timedelta(hours=hours)
 
@@ -72,9 +80,7 @@ class Temporis:
         return dt
 
     @staticmethod
-    def last_business_day_of_month(
-        dt: datetime, holidays: list[date] = []
-    ) -> datetime:
+    def last_business_day_of_month(dt: datetime, holidays: list[date] = []) -> datetime:
         dt = Temporis.last_day_of_month(dt)
         if not Temporis.is_business_day(dt, holidays):
             return Temporis.previous_business_day(dt, holidays)
