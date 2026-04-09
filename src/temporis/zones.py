@@ -3,7 +3,7 @@ from enum import StrEnum
 
 class TemporisZone:
     """
-    A class to represent different time zones categorized by regions.
+    Timezone constants grouped by region.
     """
 
     class AFRICA(StrEnum):
@@ -24,7 +24,6 @@ class TemporisZone:
         CASABLANCA = "Africa/Casablanca"
         CEUTA = "Africa/Ceuta"
         CONAKRY = "Africa/Conakry"
-        DAMASCUS = "Asia/Damascus"
         DAKAR = "Africa/Dakar"
         DAR_ES_SALAAM = "Africa/Dar_es_Salaam"
         DJIBOUTI = "Africa/Djibouti"
@@ -194,6 +193,7 @@ class TemporisZone:
         PHOENIX = "America/Phoenix"
         PORT_OF_SPAIN = "America/Port_of_Spain"
         PORT_AU_PRINCE = "America/Port-au-Prince"
+        PORTO_ACRE = "America/Porto_Acre"
         PORTO_VELHO = "America/Porto_Velho"
         PUNTA_ARENAS = "America/Punta_Arenas"
         PUERTO_RICO = "America/Puerto_Rico"
@@ -252,13 +252,14 @@ class TemporisZone:
     class ASIA(StrEnum):
         ADEN = "Asia/Aden"
         ALMATY = "Asia/Almaty"
+        DAMASCUS = "Asia/Damascus"
         AMMAN = "Asia/Amman"
         ANADYR = "Asia/Anadyr"
         AQTAU = "Asia/Aqtau"
         AQTOBE = "Asia/Aqtobe"
         ASHGABAT = "Asia/Ashgabat"
         ASHKHABAD = "Asia/Ashkhabad"
-        Atyrau = "Asia/Atyrau"
+        ATYRAU = "Asia/Atyrau"
         BAGHDAD = "Asia/Baghdad"
         BAHRAIN = "Asia/Bahrain"
         BAKU = "Asia/Baku"
@@ -314,7 +315,6 @@ class TemporisZone:
         OMSK = "Asia/Omsk"
         ORAL = "Asia/Oral"
         PHNOM_PENH = "Asia/Phnom_Penh"
-        PORTO_ACRE = "America/Porto_Acre"
         PONTIANAK = "Asia/Pontianak"
         PYONGYANG = "Asia/Pyongyang"
         QATAR = "Asia/Qatar"
@@ -641,7 +641,7 @@ class TemporisZone:
         GMT = "GMT"
         GMT0 = "GMT0"
         GMT_PLUS_0 = "GMT+0"
-        GMT_MINUS_1 = "GMT-0"
+        GMT_MINUS_1 = "GMT-1"
         GREENWICH = "Greenwich"
         HONGKONG = "Hongkong"
         HST = "HST"

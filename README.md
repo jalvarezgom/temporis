@@ -46,24 +46,28 @@ pip install temporis
 ### Basic Date Operations
 
 ```python
-from datetime import datetime
+from datetime import date, datetime
 from temporis.temporis import Temporis
 from temporis.format import TemporisFormat
 from temporis.timezone import TemporisTz
 
 # Create a datetime object
-date = datetime(2024, 1, 1)
+moment = datetime(2024, 1, 1)
+
+# Calendar-only APIs also accept plain date objects
+calendar_day = date(2024, 1, 1)
 
 # Date manipulation
-date = Temporis.add_hours(date, 5)           # Add 5 hours
-date = Temporis.add_days(date, 3)            # Add 3 days
-date = Temporis.next_business_day(date)      # Get next business day
+moment = Temporis.add_hours(moment, 5)           # Add 5 hours
+moment = Temporis.add_days(moment, 3)            # Add 3 days
+moment = Temporis.next_business_day(moment)      # Get next business day
+calendar_day = Temporis.next_business_day(calendar_day)
 
 # Timezone change
-date_utc = TemporisTz.to_UTC(date)
+date_utc = TemporisTz.to_UTC(moment)
 
 # Date formatting
-date_str = Temporis.to_str(date, format_str=TemporisFormat.YEAR_MONTH_DAY)
+date_str = Temporis.to_str(moment, format_str=TemporisFormat.YEAR_MONTH_DAY)
 print(date_str)  # Output: 2024-01-04
 ```
 
@@ -71,14 +75,21 @@ print(date_str)  # Output: 2024-01-04
 
 ```python
 # Get next quarter
-next_quarter = Temporis.next_quarter(date)
+next_quarter = Temporis.next_quarter(moment)
 
 # Check if it's a business day
-is_business = Temporis.is_business_day(date)
+is_business = Temporis.is_business_day(moment)
 
 # Calculate difference between dates
-difference = Temporis.diff_days(date1, date2)
+difference = Temporis.count_days_between(date1, date2)
 ```
+
+### Supported input boundary
+
+- Calendar-only APIs accept both `date` and `datetime` inputs: `add_days`, `add_months`, `next_business_day`, `previous_business_day`, `first_business_day_of_month`, `last_business_day_of_month`, `next_quarter`, `next_semester`, `next_year`, `first_day_of_month`, `last_day_of_month`, `count_days_between`, `is_weekend`, `is_holiday`, and `is_business_day`.
+- These calendar methods preserve the caller runtime type when they return a date-like value.
+- Time arithmetic (`add_seconds`, `add_minutes`, `add_hours`) remains `datetime`-only.
+- Timezone operations from `TemporisTz` remain `datetime`-only.
 
 ## 📁 Project Structure
 
