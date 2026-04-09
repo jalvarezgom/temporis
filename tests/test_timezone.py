@@ -1,5 +1,4 @@
-import zoneinfo
-from datetime import datetime, timezone
+from datetime import datetime, date, timezone
 
 import pytest
 
@@ -13,7 +12,6 @@ def temporis_tz():
 
 
 def test_initialization_with_default_timezone():
-    print(zoneinfo.available_timezones())
     tz = TemporisTz()
     assert tz.tz_info.key == TemporisZone.OTHER.UTC
 
@@ -30,6 +28,12 @@ def test_now_in_specified_timezone(temporis_tz):
 
 def test_apply_converts_datetime_to_specified_timezone(temporis_tz):
     dt = datetime(2023, 1, 1, tzinfo=timezone.utc)
+    converted = temporis_tz.apply(dt)
+    assert converted.tzinfo == temporis_tz.tz_info
+
+
+def test_apply_localizes_naive_datetime(temporis_tz):
+    dt = datetime(2023, 1, 1)
     converted = temporis_tz.apply(dt)
     assert converted.tzinfo == temporis_tz.tz_info
 
@@ -53,3 +57,8 @@ def test_replace(temporis_tz):
     replaced = tz.replace(dt)
     assert dt.hour == replaced.hour
     assert replaced.tzinfo != temporis_tz.tz_info
+
+
+def test_timezone_apply_rejects_date_inputs(temporis_tz):
+    with pytest.raises(AttributeError):
+        temporis_tz.apply(date(2024, 1, 1))

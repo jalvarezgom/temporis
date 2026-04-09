@@ -1,8 +1,6 @@
 import zoneinfo
 from datetime import datetime
 
-import pytz
-
 from temporis.zones import TemporisZone
 
 
@@ -23,11 +21,10 @@ class TemporisTz:
             The timezone information to use (default is TemporisZone.OTHER.UTC).
         """
         self.tz_info = zoneinfo.ZoneInfo(tz_info)
-        self._pytz_info = pytz.timezone(tz_info)
 
     def now(self):
         """
-        Returns the current date and time in the specified timezone.
+        Returns the current datetime in the configured timezone.
 
         Returns:
         --------
@@ -38,7 +35,7 @@ class TemporisTz:
 
     def apply(self, dt: datetime):
         """
-        Converts the given datetime object to the specified timezone.
+        Converts a datetime to the configured timezone.
 
         Parameters:
         -----------
@@ -50,11 +47,13 @@ class TemporisTz:
         datetime
             The converted datetime object in the specified timezone.
         """
-        return dt.astimezone(self._pytz_info)
+        if dt.tzinfo is None:
+            return dt.replace(tzinfo=self.tz_info)
+        return dt.astimezone(self.tz_info)
 
     def replace(self, dt: datetime):
         """
-        Replaces the timezone information of the given datetime object with the specified timezone.
+        Replaces the datetime timezone with the configured timezone.
 
         Parameters:
         -----------
@@ -70,7 +69,7 @@ class TemporisTz:
 
     def localize(self, dt: datetime):
         """
-        Localizes the given naive datetime object to the specified timezone.
+        Attaches the configured timezone to a naive datetime.
 
         Parameters:
         -----------
@@ -82,12 +81,12 @@ class TemporisTz:
         datetime
             The localized datetime object in the specified timezone.
         """
-        return self._pytz_info.localize(dt)
+        return dt.replace(tzinfo=self.tz_info)
 
     @classmethod
     def to_UTC(cls, dt):
         """
-        Converts the given datetime object to UTC timezone.
+        Converts a datetime to UTC.
 
         Parameters:
         -----------

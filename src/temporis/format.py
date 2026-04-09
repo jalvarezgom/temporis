@@ -48,12 +48,12 @@ class TemporisFormat:
 
     def __init__(self, datetime_delimiter: str | None = None):
         """
-        Initializes the TemporisFormat class with an optional datetime delimiter.
+        Initializes the format constants with an optional delimiter override.
 
         Parameters:
         -----------
         datetime_delimiter : str | None
-            A string to replace the default '-' delimiter in date formats.
+            A string to replace the default '-' delimiter in date-based formats.
         """
         self.DATETIME_DELIMITER = datetime_delimiter
         if self.DATETIME_DELIMITER:
@@ -66,7 +66,7 @@ class TemporisFormat:
 
     def __keys__(self) -> set[str]:
         """
-        Returns a set of attribute names for the class, excluding private attributes.
+        Returns public attribute names defined on the instance.
 
         Returns:
         --------

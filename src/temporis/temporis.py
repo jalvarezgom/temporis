@@ -2,6 +2,9 @@ from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 
 
+DateLike = date | datetime
+
+
 class Temporis:
     """
     A class for various date and time operations.
@@ -29,75 +32,88 @@ class Temporis:
 
     @staticmethod
     def add_seconds(dt: datetime, seconds: int) -> datetime:
-        """Adds a specified number of seconds to a datetime object."""
+        """Adds seconds to a datetime object. This API remains datetime-only."""
+        dt = Temporis._require_datetime(dt, "add_seconds")
         return dt + timedelta(seconds=seconds)
 
     @staticmethod
     def add_minutes(dt: datetime, minutes: int) -> datetime:
-        """Adds a specified number of minutes to a datetime object."""
+        """Adds minutes to a datetime object. This API remains datetime-only."""
+        dt = Temporis._require_datetime(dt, "add_minutes")
         return dt + timedelta(minutes=minutes)
 
     @staticmethod
     def add_hours(dt: datetime, hours: int) -> datetime:
-        """Adds a specified number of hours to a datetime object."""
+        """Adds hours to a datetime object. This API remains datetime-only."""
+        dt = Temporis._require_datetime(dt, "add_hours")
         return dt + timedelta(hours=hours)
 
     @staticmethod
-    def add_days(dt: datetime, days: int) -> datetime:
-        """Adds a specified number of days to a datetime object."""
+    def add_days(dt: DateLike, days: int) -> DateLike:
+        """Adds days to a date or datetime while preserving the runtime type."""
         return dt + timedelta(days=days)
 
     @staticmethod
-    def add_months(dt: datetime, months: int) -> datetime:
-        """Adds a specified number of months to a datetime object."""
-        return dt + relativedelta(months=1)
+    def add_months(dt: DateLike, months: int) -> DateLike:
+        """Adds months to a date or datetime while preserving the runtime type."""
+        return dt + relativedelta(months=months)
 
     @staticmethod
-    def next_business_day(dt: datetime, holidays: list[date] = []) -> datetime:
+    def next_business_day(dt: DateLike, holidays: list[date] | None = None) -> DateLike:
         """
-        Returns the next business day, skipping weekends and holidays.
+        Returns the next business day for a date or datetime, skipping weekends and holidays.
 
         Parameters:
         -----------
-        dt : datetime
-            The starting date.
-        holidays : list[date], optional
-            A list of holiday dates to skip (default is an empty list).
+        dt : date | datetime
+            The starting calendar value.
+        holidays : list[date] | None, optional
+            A list of holiday dates to skip.
         """
+        holidays = holidays or []
         while True:
             dt = Temporis.add_days(dt, 1)
             if Temporis.is_business_day(dt, holidays):
                 return dt
 
     @staticmethod
-    def next_quarter(dt: datetime) -> datetime:
-        """Returns the start date of the next quarter."""
+    def next_quarter(dt: DateLike) -> DateLike:
+        """Returns the first day of the next quarter, preserving the runtime type."""
         current_quarter = (dt.month - 1) // 3
-        return dt.replace(month=current_quarter * 3 + 4)
+        next_quarter_month = current_quarter * 3 + 4
+        if next_quarter_month > 12:
+            return dt.replace(year=dt.year + 1, month=1, day=1)
+        return dt.replace(month=next_quarter_month, day=1)
 
     @staticmethod
-    def next_semester(dt: datetime) -> datetime:
-        """Returns the start date of the next semester."""
+    def next_semester(dt: DateLike) -> DateLike:
+        """Returns the first day of the next semester, preserving the runtime type."""
         current_semester = (dt.month - 1) // 6
-        return dt.replace(month=current_semester * 6 + 7)
+        next_semester_month = current_semester * 6 + 7
+        if next_semester_month > 12:
+            return dt.replace(year=dt.year + 1, month=1, day=1)
+        return dt.replace(month=next_semester_month, day=1)
 
     @staticmethod
-    def next_year(dt: datetime) -> datetime:
-        """Returns the start date of the next year."""
+    def next_year(dt: DateLike) -> DateLike:
+        """Returns the start of the next year, preserving the runtime type."""
         return dt.replace(day=1, month=1, year=dt.year + 1)
 
     @staticmethod
-    def previous_business_day(dt: datetime, holidays: list[date] = []) -> datetime:
+    def previous_business_day(
+        dt: DateLike, holidays: list[date] | None = None
+    ) -> DateLike:
         """
-        Returns the previous business day, skipping weekends and holidays.
+        Returns the previous business day for a date or datetime, skipping weekends and holidays.
 
         Parameters:
         -----------
-        dt : datetime
-            The starting date.
-        holidays : list[date], optional
-            A list of holiday dates to skip (default is an empty list).
+        dt : date | datetime
+            The starting calendar value.
+        holidays : list[date] | None, optional
+            A list of holiday dates to skip.
         """
+        holidays = holidays or []
         while True:
             dt = Temporis.add_days(dt, -1)
             if Temporis.is_business_day(dt, holidays):
@@ -105,68 +121,73 @@ class Temporis:
 
     @staticmethod
     def first_business_day_of_month(
-        dt: datetime, holidays: list[date] = []
-    ) -> datetime:
+        dt: DateLike, holidays: list[date] | None = None
+    ) -> DateLike:
         """
-        Returns the first business day of the month, skipping holidays.
+        Returns the first business day of the month for a date or datetime.
 
         Parameters:
         -----------
-        dt : datetime
-            The starting date.
-        holidays : list[date], optional
-            A list of holiday dates to skip (default is an empty list).
+        dt : date | datetime
+            The starting calendar value.
+        holidays : list[date] | None, optional
+            A list of holiday dates to skip.
         """
+        holidays = holidays or []
         dt = Temporis.first_day_of_month(dt)
         if not Temporis.is_business_day(dt, holidays):
             return Temporis.next_business_day(dt, holidays)
         return dt
 
     @staticmethod
-    def last_business_day_of_month(dt: datetime, holidays: list[date] = []) -> datetime:
+    def last_business_day_of_month(
+        dt: DateLike, holidays: list[date] | None = None
+    ) -> DateLike:
         """
-        Returns the last business day of the month, skipping holidays.
+        Returns the last business day of the month for a date or datetime.
 
         Parameters:
         -----------
-        dt : datetime
-            The starting date.
-        holidays : list[date], optional
-            A list of holiday dates to skip (default is an empty list).
+        dt : date | datetime
+            The starting calendar value.
+        holidays : list[date] | None, optional
+            A list of holiday dates to skip.
         """
+        holidays = holidays or []
         dt = Temporis.last_day_of_month(dt)
         if not Temporis.is_business_day(dt, holidays):
             return Temporis.previous_business_day(dt, holidays)
         return dt
 
     @staticmethod
-    def is_business_day(dt: datetime, holidays: list[date] = []) -> bool:
+    def is_business_day(dt: DateLike, holidays: list[date] | None = None) -> bool:
         """
-        Checks if a date is a business day, excluding weekends and holidays.
+        Checks if a date-like value is a business day, excluding weekends and holidays.
 
         Parameters:
         -----------
-        dt : datetime
-            The date to check.
-        holidays : list[date], optional
-            A list of holiday dates to skip (default is an empty list).
+        dt : date | datetime
+            The calendar value to check.
+        holidays : list[date] | None, optional
+            A list of holiday dates to skip.
 
         Returns:
         --------
         bool
             True if the date is a business day, False otherwise.
         """
+        holidays = holidays or []
         return not Temporis.is_weekend(dt) and not Temporis.is_holiday(dt, holidays)
 
     @staticmethod
-    def is_weekend(dt: datetime) -> bool:
+    def is_weekend(dt: DateLike) -> bool:
         """
-        Checks if a date falls on a weekend.
+        Checks if a date-like value falls on a weekend.
 
         Parameters:
         -----------
-        dt : datetime
-            The date to check.
+        dt : date | datetime
+            The calendar value to check.
 
         Returns:
         --------
@@ -176,14 +197,14 @@ class Temporis:
         return dt.weekday() in [5, 6]
 
     @staticmethod
-    def is_holiday(dt: datetime, holidays: list[date]) -> bool:
+    def is_holiday(dt: DateLike, holidays: list[date]) -> bool:
         """
-        Checks if a date is a holiday.
+        Checks if a date-like value matches a holiday by calendar day.
 
         Parameters:
         -----------
-        dt : datetime
-            The date to check.
+        dt : date | datetime
+            The calendar value to check.
         holidays : list[date]
             A list of holiday dates.
 
@@ -192,53 +213,57 @@ class Temporis:
         bool
             True if the date is a holiday, False otherwise.
         """
-        return dt.date() in holidays
+        return Temporis._calendar_date(dt) in holidays
 
     @staticmethod
-    def first_day_of_month(dt: datetime) -> datetime:
+    def first_day_of_month(dt: DateLike) -> DateLike:
         """
-        Returns the first day of the month.
+        Returns the first day of the month, preserving the runtime type.
 
         Parameters:
         -----------
-        dt : datetime
-            The date to modify.
+        dt : date | datetime
+            The calendar value to modify.
 
         Returns:
         --------
-        datetime
+        date | datetime
             The first day of the month.
         """
         return dt.replace(day=1)
 
     @staticmethod
-    def last_day_of_month(dt: datetime) -> datetime:
+    def last_day_of_month(dt: DateLike) -> DateLike:
         """
-        Returns the last day of the month.
+        Returns the last day of the month, preserving the runtime type.
 
         Parameters:
         -----------
-        dt : datetime
-            The date to modify.
+        dt : date | datetime
+            The calendar value to modify.
 
         Returns:
         --------
-        datetime
+        date | datetime
             The last day of the month.
         """
-        return dt.replace(day=1, month=dt.month + 1) - timedelta(days=1)
+        if dt.month == 12:
+            first_day_next_month = dt.replace(year=dt.year + 1, month=1, day=1)
+        else:
+            first_day_next_month = dt.replace(month=dt.month + 1, day=1)
+        return first_day_next_month - timedelta(days=1)
 
     @staticmethod
-    def count_days_between(start: datetime, end: datetime) -> int:
+    def count_days_between(start: DateLike, end: DateLike) -> int:
         """
-        Counts the number of days between two dates.
+        Counts the number of days between two homogeneous date-like values.
 
         Parameters:
         -----------
-        start : datetime
-            The start date.
-        end : datetime
-            The end date.
+        start : date | datetime
+            The start calendar value.
+        end : date | datetime
+            The end calendar value.
 
         Returns:
         --------
@@ -246,3 +271,17 @@ class Temporis:
             The number of days between the start and end dates.
         """
         return (end - start).days
+
+    @staticmethod
+    def _require_datetime(value: datetime, method_name: str) -> datetime:
+        """Validates that a time-based API receives a datetime input."""
+        if not isinstance(value, datetime):
+            raise TypeError(f"{method_name} only supports datetime inputs")
+        return value
+
+    @staticmethod
+    def _calendar_date(value: DateLike) -> date:
+        """Normalizes a date-like value to a calendar date for comparisons."""
+        if isinstance(value, datetime):
+            return value.date()
+        return value
