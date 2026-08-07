@@ -55,14 +55,14 @@ class TemporisFormat:
         datetime_delimiter : str | None
             A string to replace the default '-' delimiter in date-based formats.
         """
-        self.DATETIME_DELIMITER = datetime_delimiter
-        if self.DATETIME_DELIMITER:
+        if datetime_delimiter:
             for name in self.__keys__().difference(self.__exclude__):
                 setattr(
                     self,
                     name,
-                    getattr(self, name).replace("-", self.DATETIME_DELIMITER),
+                    getattr(type(self), name).replace("-", datetime_delimiter),
                 )
+        self.DATETIME_DELIMITER = datetime_delimiter
 
     def __keys__(self) -> set[str]:
         """

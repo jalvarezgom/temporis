@@ -62,3 +62,10 @@ def test_replace(temporis_tz):
 def test_timezone_apply_rejects_date_inputs(temporis_tz):
     with pytest.raises(AttributeError):
         temporis_tz.apply(date(2024, 1, 1))
+
+
+def test_to_UTC_assumes_naive_datetime_is_utc(temporis_tz):
+    dt = datetime(2024, 1, 1, 12, 0)
+    utc_dt = temporis_tz.to_UTC(dt)
+    assert str(utc_dt.tzinfo) == str(timezone.utc)
+    assert utc_dt.hour == 12

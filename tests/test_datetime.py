@@ -12,6 +12,13 @@ def test_datetime_format_change_delimiter():
     assert datetime_format.YEAR_MONTH_DAY == "%Y/%m/%d"
 
 
+def test_datetime_format_change_delimiter_containing_dash():
+    datetime_format = TemporisFormat(datetime_delimiter="--")
+    assert datetime_format.YEAR_MONTH_DAY == "%Y--%m--%d"
+    assert datetime_format.DATETIME_DELIMITER == "--"
+    assert TemporisFormat.YEAR_MONTH_DAY == "%Y-%m-%d"
+
+
 def test_datetime_today():
     new_date = Temporis.get_current_datetime()
     assert isinstance(new_date, datetime)

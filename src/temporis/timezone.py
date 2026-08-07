@@ -86,7 +86,7 @@ class TemporisTz:
     @classmethod
     def to_UTC(cls, dt):
         """
-        Converts a datetime to UTC.
+        Converts a datetime to UTC. Naive datetimes are assumed to already be UTC.
 
         Parameters:
         -----------
@@ -98,4 +98,7 @@ class TemporisTz:
         datetime
             The converted datetime object in UTC timezone.
         """
-        return dt.astimezone(zoneinfo.ZoneInfo(TemporisZone.OTHER.UTC))
+        utc = zoneinfo.ZoneInfo(TemporisZone.OTHER.UTC)
+        if dt.tzinfo is None:
+            return dt.replace(tzinfo=utc)
+        return dt.astimezone(utc)

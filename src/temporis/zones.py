@@ -496,7 +496,6 @@ class TemporisZone:
         SAN_MARINO = "Europe/San_Marino"
         SARAJEVO = "Europe/Sarajevo"
         SIMFEROPOL = "Europe/Simferopol"
-        SINGAPURE = "Singapore"
         SKOPJE = "Europe/Skopje"
         SOFIA = "Europe/Sofia"
         STOCKHOLM = "Europe/Stockholm"
